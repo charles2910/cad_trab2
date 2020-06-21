@@ -29,7 +29,7 @@ min_path * init_min_path(int);
 
 int main(int argc, char ** argv) {
 	// Declara as variáveis de índice
-	int i, j, dim, min, n_vert;
+	int i, j, dim, n_vert;
 
 	// Lê a dimensão das matrizes
 	fscanf(stdin, "%d\n", &dim);
@@ -52,7 +52,18 @@ int main(int argc, char ** argv) {
 		vertices->vert[l - 1] = l;
 	}
 
-	min = find_min_path(ORIGEM, vertices);
+	min_path * min = find_min_path(ORIGEM, vertices);
+
+	printf("menor custo: %d\n", min->custo);
+
+	for(int i = 0; i < min->n_vert; i++) {
+		if (i == min->n_vert - 1) {
+			printf("%d --> %d\n", min->caminho[i], min->caminho[0]);
+			break;
+		}
+		printf("%d --> ", min->caminho[i]);
+	}
+	return 0;
 }
 
 c_vert * init_c_vert(int num_vertices) {
@@ -73,9 +84,38 @@ min_path * init_min_path(int num_vertices) {
 	min_path * temp = (min_path *) malloc(sizeof(min_path));
 	temp->caminho = (int *) calloc(num_vertices, sizeof(int));
 	temp->n_vert = num_vertices;
-	temp->custo = INT_MAX;
+	temp->custo = INT_MAX/2 - 1;
 
 	return temp;
+}
+
+int find_index_min(min_path ** caminhos, int n_vert) {
+	if (caminhos == NULL || n_vert < 3)
+		return -1;
+
+	int index_min = -2, min = INT_MAX;
+
+	for(int i = 0; i < n_vert; i++) {
+		if (caminhos[i]->custo < min) {
+			index_min = i;
+			min = caminhos[i]->custo;
+		}
+	}
+
+	return index_min;
+}
+
+int append_min_path(int origem, int *novo_caminho, min_path *caminho) {
+	if (origem < 0 || novo_caminho == NULL | caminho == NULL)
+		return -1;
+
+	for(int i = 1; i <= caminho->n_vert; i++) {
+		novo_caminho[i] = caminho->caminho[i - 1];
+	}
+
+	novo_caminho[0] = origem;
+
+	return 0;
 }
 
 min_path * find_min_path(int orig, c_vert *vertices) {
@@ -91,9 +131,29 @@ min_path * find_min_path(int orig, c_vert *vertices) {
 	int ** caminhos = (min_path **) calloc(n_vert, sizeof(min_path *));
 
 	for(int i = 0; i < n_vert; i++) {
-		temp[i] = find_min_path(vert[i], vert_i, n_vert - 1, caminho, matriz);
+		c_vert * novo = init_c_vert(vertices->n_vert - 1);
+		int marcacao = 0;
+		for (int j = 0; j < vertices->n_vert; j++) {
+			if (j == i) {
+				marcacao = 1;
+				continue;
+			}
+			if (marcacao)
+				novo->vert[j - 1] = j;
+			else
+				novo->vert[j] = j;
+		}
+		caminhos[i] = find_min_path(vertices->vert[i], novo);
+		free(novo);
+		caminhos[i]->custo += matriz[orig][vertices->vert[i]];
 	}
-	int index_min = find_index_min(temp, n_vert);
+
+	int index_min = find_index_min(caminhos, n_vert);
+	min_path *path_min = init_min_path(n_vert + 1);
+	path_min->custo = caminhos[index_min]->custo;
+	append_min_path(orig, path_min->caminho, caminhos[index_min]);
+
+	return path_min;
 }
 
 
