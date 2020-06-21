@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
-#include <omp.h>
-#include <mpi.h>
+//#include <omp.h>
+//#include <mpi.h>
 
 #define ORIGEM 0
 
@@ -17,23 +17,28 @@ typedef struct {
 	int *vert;
 } c_vert;
 
-// Declara a matriz global
-int *matriz;
-
 c_vert * init_c_vert(int);
 
-min_path * find_min_path(int, c_vert *);
+min_path * find_min_path(int, c_vert *, int *);
 
 min_path * init_min_path(int);
 
+int find_index_min(min_path **, int);
+
+int append_min_path(int, int *, min_path *);
+
+int dim;
 
 int main(int argc, char ** argv) {
 	// Declara as variáveis de índice
-	int i, j, dim, n_vert;
+	int i, j, n_vert;
 
 	// Lê a dimensão das matrizes
 	fscanf(stdin, "%d\n", &dim);
  
+	// Declara a matriz global
+	int *matriz;
+
 	// Aloca a matriz
 	matriz = (int *) malloc(dim *dim * sizeof(int));
 
@@ -52,7 +57,7 @@ int main(int argc, char ** argv) {
 		vertices->vert[l - 1] = l;
 	}
 
-	min_path * min = find_min_path(ORIGEM, vertices);
+	min_path * min = find_min_path(ORIGEM, vertices, matriz);
 
 	printf("menor custo: %d\n", min->custo);
 
@@ -90,7 +95,7 @@ min_path * init_min_path(int num_vertices) {
 }
 
 int find_index_min(min_path ** caminhos, int n_vert) {
-	if (caminhos == NULL || n_vert < 3)
+	if ((caminhos == NULL) || (n_vert < 3))
 		return -1;
 
 	int index_min = -2, min = INT_MAX;
@@ -106,7 +111,7 @@ int find_index_min(min_path ** caminhos, int n_vert) {
 }
 
 int append_min_path(int origem, int *novo_caminho, min_path *caminho) {
-	if (origem < 0 || novo_caminho == NULL | caminho == NULL)
+	if ((origem < 0) || (novo_caminho == NULL) || (caminho == NULL))
 		return -1;
 
 	for(int i = 1; i <= caminho->n_vert; i++) {
@@ -118,19 +123,19 @@ int append_min_path(int origem, int *novo_caminho, min_path *caminho) {
 	return 0;
 }
 
-min_path * find_min_path(int orig, c_vert *vertices) {
+min_path * find_min_path(int orig, c_vert *vertices, int * matriz) {
 	// fim de recursão
 	if (vertices->n_vert == 1) {
 		min_path *path = init_min_path(2);
-		path->custo = matriz[orig][vertices->vert[0]];
+		path->custo = matriz[orig * dim + vertices->vert[0]];
 		path->caminho[1] = vertices->vert[0];
 		path->caminho[0] = orig;
 		return path;
 	}
 	// caso contrário
-	int ** caminhos = (min_path **) calloc(n_vert, sizeof(min_path *));
+	min_path ** caminhos = (min_path **) calloc(vertices->n_vert, sizeof(min_path *));
 
-	for(int i = 0; i < n_vert; i++) {
+	for(int i = 0; i < vertices->n_vert; i++) {
 		c_vert * novo = init_c_vert(vertices->n_vert - 1);
 		int marcacao = 0;
 		for (int j = 0; j < vertices->n_vert; j++) {
@@ -143,13 +148,13 @@ min_path * find_min_path(int orig, c_vert *vertices) {
 			else
 				novo->vert[j] = j;
 		}
-		caminhos[i] = find_min_path(vertices->vert[i], novo);
+		caminhos[i] = find_min_path(vertices->vert[i], novo, matriz);
 		free(novo);
-		caminhos[i]->custo += matriz[orig][vertices->vert[i]];
+		(caminhos[i])->custo += matriz[orig * dim + vertices->vert[i]];
 	}
 
-	int index_min = find_index_min(caminhos, n_vert);
-	min_path *path_min = init_min_path(n_vert + 1);
+	int index_min = find_index_min(caminhos, vertices->n_vert);
+	min_path *path_min = init_min_path(vertices->n_vert + 1);
 	path_min->custo = caminhos[index_min]->custo;
 	append_min_path(orig, path_min->caminho, caminhos[index_min]);
 
