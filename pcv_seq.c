@@ -69,7 +69,7 @@ int main(int argc, char ** argv) {
 
 	for (int l = 1; l <= n_vert; l++) {
 		(vertices->vert)[l - 1] = l;
-		printf("vertice %d\n", (vertices->vert)[l-1]); 
+		printf("\nvertice %d\n", (vertices->vert)[l-1]); 
 	}
 
 	min_path * min = find_min_path(ORIGEM, vertices, matriz);
@@ -110,7 +110,7 @@ min_path * init_min_path(int num_vertices) {
 }
 
 int find_index_min(min_path ** caminhos, int n_vert) {
-	if ((caminhos == NULL) || (n_vert < 3))
+	if ((caminhos == NULL) || (n_vert < 2))
 		return -1;
 
 	int index_min = -2, min = INT_MAX;
@@ -159,9 +159,9 @@ min_path * find_min_path(int orig, c_vert *vertices, int * matriz) {
 				continue;
 			}
 			if (marcacao)
-				novo->vert[j - 1] = j;
+				novo->vert[j - 1] = vertices->vert[j];
 			else
-				novo->vert[j] = j;
+				novo->vert[j] = vertices->vert[j];
 		}
 		caminhos[i] = find_min_path(vertices->vert[i], novo, matriz);
 		free(novo);
