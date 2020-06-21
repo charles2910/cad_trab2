@@ -49,6 +49,16 @@ int main(int argc, char ** argv) {
 		}
 	}
 
+	printf("\n\nThe cost list is:");
+ 
+	for(int i = 0; i < dim; i++)
+	{
+		printf("\n");
+ 
+		for(int j = 0; j < dim; j++)
+			printf("\t%d",matriz[i * dim + j]);
+	}
+
 	n_vert = dim - 1;
 
 	c_vert * vertices = init_c_vert(n_vert);
