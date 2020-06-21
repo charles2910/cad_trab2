@@ -54,11 +54,11 @@ int main(int argc, char ** argv) {
 
 	printf("\n\nThe cost list is:");
  
-	for(int i = 0; i < dim; i++)
+	for(i = 0; i < dim; i++)
 	{
 		printf("\n");
  
-		for(int j = 0; j < dim; j++)
+		for(j = 0; j < dim; j++)
 			printf("\t%d",matriz[i * dim + j]);
 	}
 
