@@ -33,7 +33,12 @@ int main(int argc, char ** argv) {
 	// Declara as variáveis de índice
 	int i, j, n_vert;
 
-	FILE *fp = fopen("caixeiro", "r");
+	FILE *fp;
+
+	if (argc > 1)
+		fp = fopen(argv[1], "r");
+	else
+		fp = fopen("caixeiro-4", "r");
 
 	// Lê a dimensão das matrizes
 	fscanf(fp, "%d\n", &dim);
