@@ -49,6 +49,7 @@ int main(int argc, char ** argv) {
 	for(i = 0; i < dim; i++) {
 		for(j = 0; j < dim; j++) {
 			fscanf(fp, "%d ", &(matriz[i*dim+j]));
+			printf("\t%d",matriz[i * dim + j]);
 		}
 	}
 
@@ -66,8 +67,9 @@ int main(int argc, char ** argv) {
 
 	c_vert * vertices = init_c_vert(n_vert);
 
-	for (int l = 1; i < n_vert; l++) {
-		vertices->vert[l - 1] = l;
+	for (int l = 1; l <= n_vert; l++) {
+		(vertices->vert)[l - 1] = l;
+		printf("vertice %d\n", (vertices->vert)[l-1]); 
 	}
 
 	min_path * min = find_min_path(ORIGEM, vertices, matriz);
