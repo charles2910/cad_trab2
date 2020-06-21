@@ -178,6 +178,11 @@ min_path * find_min_path(int orig, c_vert *vertices, int * matriz) {
 	path_min->custo = caminhos[index_min]->custo;
 	append_min_path(orig, path_min->caminho, caminhos[index_min]);
 
+	for(int i = 0; i < vertices->n_vert; i++) {
+		free(caminhos[i]);
+	}
+	free(caminhos);
+
 	return path_min;
 }
 
