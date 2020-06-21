@@ -33,8 +33,11 @@ int main(int argc, char ** argv) {
 	// Declara as variáveis de índice
 	int i, j, n_vert;
 
+	FILE *fp = fopen("caixeiro", "r");
+
 	// Lê a dimensão das matrizes
-	fscanf(stdin, "%d\n", &dim);
+	fscanf(fp, "%d\n", &dim);
+	printf("Dimensão: %d\n", dim);
  
 	// Declara a matriz global
 	int *matriz;
@@ -45,7 +48,7 @@ int main(int argc, char ** argv) {
 	// Lê a matriz
 	for(i = 0; i < dim; i++) {
 		for(j = 0; j < dim; j++) {
-			fscanf(stdin, "%d ", &(matriz[i*dim+j]));
+			fscanf(fp, "%d ", &(matriz[i*dim+j]));
 		}
 	}
 
