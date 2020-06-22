@@ -193,7 +193,7 @@ int main(int argc, char **argv)  {
 	printf("\n");
 	}
 
-	for(int k = 0; i < vertices->n_vert; i++) {
+	for(int k = 0; k < vertices->n_vert; k++) {
 		path_min_mpi[k]->custo += matriz[ORIGEM * dim + vertices->vert[k]];
 	}
 
