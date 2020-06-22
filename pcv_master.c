@@ -135,39 +135,35 @@ int main(int argc, char **argv)  {
 
 
 	src = dst = root = 0;
-	for(int m = 0; m < dim - 1; m++) {
-		MPI_Comm_spawn(slave, &argv[1], 1, info_param, root, MPI_COMM_WORLD, &(inter_comm[m]), errcodes);
-	}
 
 
-	//MPI_Send(msg_0, 50, MPI_CHAR, dst, master_tag, inter_comm);
-	
-	//MPI_Send(master_data, 50, MPI_CHAR, dst, master_tag, inter_comm);
-    
-	for (i = 0; i < dim; i++) {
+	//for (i = 0; i < dim; i++) {
 		//MPI_Send(&(origs[i]), 1, MPI_CHAR, 
 		//printf("Master from %s: msg_1=%s,vet[%d]=%d,buf_rcv=%d,vet_master[%d]=%d\n",processor_name,msg_1,i,vet[i],buf_rcv,i,vet_master[i]);
-	}
+	//}
 
 	int  array_of_errcodes[10], tag = 0;
 	char message_0[] = "hello slave, i'm your master";
 	char master_data[] = "slaves to work";
-	char message_1[50];
+	char message_1[4][50];
 	printf("MASTER on processor %s : spawning %d slaves ... \n", processor_name, NUM_SPAWNS);
 
 	/* spawn slave and send it a message */  
 	strcpy(slave,"./pcv_slave");
-	MPI_Comm_spawn(slave, MPI_ARGV_NULL, NUM_SPAWNS, MPI_INFO_NULL, dst, MPI_COMM_WORLD, &inter_comm, array_of_errcodes);
+	for(int m = 0; m < dim - 1; m++) {
+		MPI_Comm_spawn(slave, &argv[1], 1, info_param, root, MPI_COMM_WORLD, &(inter_comm[m]), errcodes);
+	}
+	//MPI_Comm_spawn(slave, MPI_ARGV_NULL, NUM_SPAWNS, MPI_INFO_NULL, dst, MPI_COMM_WORLD, &inter_comm, array_of_errcodes);
 
-	
+	for(int p = 0; p < dim - 1; p++) {
 	printf("MASTER : send a message to master of slaves (%s) ...\n", message_0);
-	MPI_Send(message_0, 50, MPI_CHAR, dst , tag, inter_comm);
+	MPI_Send(message_0, 50, MPI_CHAR, dst , tag, inter_comm[p]);
 
-	MPI_Recv(message_1, 50, MPI_CHAR, dst, tag, inter_comm, &status);
-	printf("MASTER : message received : %s\n", message_1);
+	MPI_Recv(message_1[p], 50, MPI_CHAR, dst, tag, inter_comm[p], &status);
+	printf("MASTER : message received : %s\n", message_1[p]);
 
-	MPI_Send(master_data, 50, MPI_CHAR, dst , tag, inter_comm);
-
+	MPI_Send(master_data, 50, MPI_CHAR, dst , tag, inter_comm[p]);
+	}
 
 
 
