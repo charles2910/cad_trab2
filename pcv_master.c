@@ -105,14 +105,14 @@ int main(int argc, char **argv)  {
 	for(int t = 0; t < dim - 1; t++) {
 		int marcacao = 0;
 		for (int j = 0; j < dim - 1; j++) {
-			if (origs[j] == origs[i]) {
+			if (j == i) {
 				marcacao = 1;
 				continue;
 			}
 			if (marcacao)
-				verts_mpi[t]->vert[j - 1] = origs[j];
+				verts_mpi[t]->vert[j - 1] = vertices->vert[j];
 			else
-				verts_mpi[t]->vert[j] = origs[j];
+				verts_mpi[t]->vert[j] = vertices->vert[j];
 		}
 	}
 
