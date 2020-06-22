@@ -149,7 +149,7 @@ int main(int argc, char **argv)  {
 	}
 
 	for(int p = 0; p < dim - 1; p++) {
-		printf("MASTER : send a message to master of slaves (%s) ...\n", arquivo);
+		printf("MASTER : send a message to master of slaves %d (%s) ...\n", p, arquivo);
 		MPI_Send(arquivo, 20, MPI_CHAR, dst , tag, inter_comm[p]);
 
 		MPI_Recv(message_1[p], 50, MPI_CHAR, dst, tag, inter_comm[p], &status);
