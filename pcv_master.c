@@ -171,7 +171,7 @@ int main(int argc, char **argv)  {
 		// Agora envia a origem a partir da qual procurar
 		MPI_Send(&origs[p], 1, MPI_INT, dst , tag, inter_comm[p]);
 		// Então envia o conjunto de vértices
-		MPI_Send(verts_mpi[p]->vert, verts_mpi[p]->n_vert, MPI_CHAR, dst , tag, inter_comm[p]);
+		MPI_Send(verts_mpi[p]->vert, verts_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p]);
 	}
 
 	printf("\n\nPassou dos envios\n\n");
