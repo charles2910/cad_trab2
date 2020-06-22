@@ -135,7 +135,7 @@ int main(int argc, char **argv)  {
 	int array_of_errcodes[10], tag = 0;
 	char arquivo[20];
 	char master_data[] = "slaves to work";
-	char message_1[4][50];
+	char message_1[15][50];
 	printf("MASTER on processor %s : spawning %d slaves ... \n", processor_name, NUM_SPAWNS);
 
 	// Copia nome do arquivo da matriz
