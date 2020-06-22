@@ -172,8 +172,10 @@ int main(int argc, char **argv)  {
 	for(int p = 0; p < dim - 1; p++) {
 		// Pai recebe número de vértices do caminho mínimo
 		MPI_Recv(&path_min_mpi[p]->n_vert, 1, MPI_INT, dst, tag, inter_comm[p], &status);
+		printf("Recebendo %d vertices de filho %d\n", path_min_mpi[p]->n_vert, p);
 		// Agora recebe o custo do caminho
 		MPI_Recv(&path_min_mpi[p]->custo, 1, MPI_INT, dst , tag, inter_comm[p], &status);
+		printf("Recebendo custo %d de filho %d\n", path_min_mpi[p]->custo, p);
 		path_min_mpi[p]->caminho = (int *) calloc(path_min_mpi[p]->n_vert, sizeof(int));
 		// Então recebe o conjunto de vértices do caminho
 		MPI_Recv(path_min_mpi[p]->caminho, path_min_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p], &status);
