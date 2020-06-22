@@ -85,6 +85,7 @@ int main(int argc, char **argv)  {
 	MPI_Recv(&origem, 1, MPI_INT, 0, tag, inter_comm, &status);
 	// Inicializa estrutura do conjunto de vértices
 	vertices = init_c_vert(n_vert);
+	vertices->vert = (int *) calloc(n_vert, sizeof(int));
 	// E recebe o conjunto de vértices
 	MPI_Recv(vertices->vert, n_vert, MPI_INT, 0, tag, inter_comm, &status);
 
