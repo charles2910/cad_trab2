@@ -12,6 +12,8 @@
 #include <limits.h>
 #include <mpi.h>
 
+#define ORIGEM 0
+
 typedef struct {
 	int custo;
 	int n_vert;
@@ -165,7 +167,7 @@ min_path * find_min_path(int orig, c_vert *vertices, int * matriz) {
 	// fim de recursão
 	if (vertices->n_vert == 1) {
 		min_path *path = init_min_path(2);
-		path->custo = matriz[orig * dim + vertices->vert[0]];
+		path->custo = matriz[orig * dim + vertices->vert[0]] + matriz[vertices->vert[0] * dim + ORIGEM];
 		path->caminho[1] = vertices->vert[0];
 		path->caminho[0] = orig;
 		return path;
