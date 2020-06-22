@@ -187,7 +187,7 @@ int main(int argc, char **argv)  {
 		path_min_mpi[p]->caminho = (int *) calloc(path_min_mpi[p]->n_vert, sizeof(int));
 		// Então recebe o conjunto de vértices do caminho
 		MPI_Recv(path_min_mpi[p]->caminho, path_min_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p], &status);
-	for(int i = 0; i < path_min->n_vert; i++) {
+	for(int i = 0; i < path_min_mpi[p]->n_vert; i++) {
 		printf("%d --> ", path_min_mpi[p]->caminho[i]);
 	}
 	printf("\n");
