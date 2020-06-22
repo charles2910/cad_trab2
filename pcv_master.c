@@ -93,18 +93,15 @@ int main(int argc, char **argv)  {
 		return 0;
 	}
 
-	printf("Conjunto de vértices\n");
 	for (int t = 0; t < dim - 1; t++) {
 		origs[t] = t + 1;
 		verts_mpi[t] = init_c_vert(dim - 2);
 		path_min_mpi[t] = init_min_path(dim - 1);
 		vertices->vert[t] = t + 1;
-		printf("%d\t", vertices->vert[t]);
 	}
 
 	for(int t = 0; t < dim - 1; t++) {
 		int marcacao = 0;
-		printf("\nVértice de origem: %d\n", vertices->vert[t]);
 		for (int j = 0; j < dim - 1; j++) {
 			if (j == t) {
 				marcacao = 1;
@@ -115,8 +112,6 @@ int main(int argc, char **argv)  {
 			} else {
 				verts_mpi[t]->vert[j] = vertices->vert[j];
 			}
-			if(marcacao) printf("%d\t", verts_mpi[t]->vert[j - 1]);
-			else printf("%d\t", verts_mpi[t]->vert[j]);
 		}
 	}
 
@@ -144,7 +139,6 @@ int main(int argc, char **argv)  {
 	char arquivo[20];
 	char master_data[] = "slaves to work";
 	char message_1[15][50];
-	printf("MASTER on processor %s : spawning %d slaves ... \n", processor_name, NUM_SPAWNS);
 
 	// Copia nome do arquivo da matriz
 	if (argc > 1) strncpy(arquivo, argv[1], 16);
@@ -157,40 +151,25 @@ int main(int argc, char **argv)  {
 	}
 
 	for(int p = 0; p < dim - 1; p++) {
-		printf("MASTER : send a message to master of slaves %d (%s) ...\n", p, arquivo);
 		MPI_Send(arquivo, 20, MPI_CHAR, dst , tag, inter_comm[p]);
-
-		MPI_Recv(message_1[p], 50, MPI_CHAR, dst, tag, inter_comm[p], &status);
-		printf("MASTER : message received : %s\n", message_1[p]);
-
-		MPI_Send(master_data, 50, MPI_CHAR, dst , tag, inter_comm[p]);
 
 		// Pai envia número de vértices que devem ser explorados
 		MPI_Send(&verts_mpi[p]->n_vert, 1, MPI_INT, dst , tag, inter_comm[p]);
-		printf("Enviando pro filho %d os %d vértices\n", p, verts_mpi[p]->n_vert);
 		// Agora envia a origem a partir da qual procurar
 		MPI_Send(&origs[p], 1, MPI_INT, dst , tag, inter_comm[p]);
 		// Então envia o conjunto de vértices
 		MPI_Send(verts_mpi[p]->vert, verts_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p]);
 	}
 
-	printf("\n\nPassou dos envios\n\n");
-
 	// Está na hora de receber os caminhos mínimos calculados pelos filhos
 	for(int p = 0; p < dim - 1; p++) {
 		// Pai recebe número de vértices do caminho mínimo
 		MPI_Recv(&path_min_mpi[p]->n_vert, 1, MPI_INT, dst, tag, inter_comm[p], &status);
-		printf("Recebendo %d vertices de filho %d\n", path_min_mpi[p]->n_vert, p);
 		// Agora recebe o custo do caminho
 		MPI_Recv(&path_min_mpi[p]->custo, 1, MPI_INT, dst , tag, inter_comm[p], &status);
-		printf("Recebendo custo %d de filho %d\n", path_min_mpi[p]->custo, p);
 		path_min_mpi[p]->caminho = (int *) calloc(path_min_mpi[p]->n_vert, sizeof(int));
 		// Então recebe o conjunto de vértices do caminho
 		MPI_Recv(path_min_mpi[p]->caminho, path_min_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p], &status);
-	for(int i = 0; i < path_min_mpi[p]->n_vert; i++) {
-		printf("%d --> ", path_min_mpi[p]->caminho[i]);
-	}
-	printf("\n");
 	}
 
 	for(int k = 0; k < vertices->n_vert; k++) {
@@ -201,8 +180,6 @@ int main(int argc, char **argv)  {
 	min_path *path_min = init_min_path(dim);
 	path_min->custo = path_min_mpi[index_min]->custo;
 	append_min_path(ORIGEM, path_min->caminho, path_min_mpi[index_min]);
-
-	printf("menor custo: %d\n", path_min->custo);
 
 	for(int i = 0; i < path_min->n_vert; i++) {
 		if (i == path_min->n_vert - 1) {

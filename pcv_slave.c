@@ -71,12 +71,7 @@ int main(int argc, char **argv)  {
     other processes (slaves) */
     
 	MPI_Recv(arquivo, 20, MPI_CHAR, 0, tag, inter_comm, &status);
-	printf("SLAVE on processor %s (master) : message received : %s\n", processor_name, arquivo);
 	 
-	MPI_Send(message_1, 50, MPI_CHAR,0 , tag, inter_comm);
-	MPI_Recv(master_data, 50, MPI_CHAR, 0, tag, inter_comm, &status);
-
-	printf("SLAVE (master) : master data received : %s\n", master_data);
 	strcpy(slaves_data, master_data);
 
 	// Filho recebe número de vértices para procurar caminho mínimo
@@ -108,10 +103,6 @@ int main(int argc, char **argv)  {
 	MPI_Send(&min->custo, 1, MPI_INT, 0, tag, inter_comm);
 	// E enviar o caminho
 	MPI_Send(min->caminho, min->n_vert, MPI_INT, 0, tag, inter_comm);
-
-    
-    //MPI_Bcast(slaves_data, 50, MPI_CHAR, 0, MPI_COMM_WORLD);
-    //printf("SLAVE - %d : slaves data  received from Bcast : %s\n", my_rank, slaves_data);
 
 	MPI_Finalize();
     
