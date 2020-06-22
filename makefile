@@ -6,10 +6,10 @@ all: pcv_seq pcv_master pcv_slave
 pcv_seq: pcv_seq.c
 	gcc -o pcv_seq pcv_seq.c
 
-pcv_seq: pcv_master.c
+pcv_master: pcv_master.c
 	mpicc -o pcv_master pcv_master.c
 
-pcv_seq: pcv_slave.c
+pcv_slave: pcv_slave.c
 	mpicc -o pcv_slave pcv_slave.c
 
 clean:
