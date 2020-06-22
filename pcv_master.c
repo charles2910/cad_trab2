@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <mpi.h>
+#include <omp.h>
 
 #define NUM_SPAWNS 1
 #define ORIGEM 0
@@ -58,8 +59,6 @@ int main(int argc, char **argv)  {
 			fscanf(fp, "%d ", &(matriz[i*dim+j]));
 		}
 	}
-
-	printf("Argumento: %s\n", argv[1]);
 
 	// Preparação do MPI - Declarações
 	int 	master_tag = 1,
@@ -150,6 +149,7 @@ int main(int argc, char **argv)  {
 		MPI_Comm_spawn(slave, MPI_ARGV_NULL, 1, info_param, root, MPI_COMM_WORLD, &(inter_comm[m]), errcodes);
 	}
 
+	double time = omp_get_wtime();
 	for(int p = 0; p < dim - 1; p++) {
 		MPI_Send(arquivo, 20, MPI_CHAR, dst , tag, inter_comm[p]);
 
@@ -188,7 +188,8 @@ int main(int argc, char **argv)  {
 		}
 		printf("%d --> ", path_min->caminho[i]);
 	}
-
+	time = omp_get_wtime() - time;
+	printf("\nTempo: %f\n", time);
 	MPI_Finalize();
 	exit(0);
 }
