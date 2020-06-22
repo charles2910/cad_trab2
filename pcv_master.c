@@ -56,7 +56,6 @@ int main(int argc, char **argv)  {
 	for(i = 0; i < dim; i++) {
 		for(j = 0; j < dim; j++) {
 			fscanf(fp, "%d ", &(matriz[i*dim+j]));
-			printf("\t%d",matriz[i * dim + j]);
 		}
 	}
 
@@ -104,8 +103,9 @@ int main(int argc, char **argv)  {
 
 	for(int t = 0; t < dim - 1; t++) {
 		int marcacao = 0;
+		printf("\nVértice de origem: %d\n", vertices->vert[t]);
 		for (int j = 0; j < dim - 1; j++) {
-			if (j == i) {
+			if (j == t) {
 				marcacao = 1;
 				continue;
 			}
@@ -113,6 +113,7 @@ int main(int argc, char **argv)  {
 				verts_mpi[t]->vert[j - 1] = vertices->vert[j];
 			else
 				verts_mpi[t]->vert[j] = vertices->vert[j];
+			printf("%d\t", verts_mpi[t]->vert[j]);
 		}
 	}
 
