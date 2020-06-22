@@ -182,6 +182,20 @@ int main(int argc, char **argv)  {
 		MPI_Recv(path_min_mpi[p]->caminho, path_min_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p], &status);
 	}
 
+	int index_min = find_index_min(path_min_mpi, dim - 1);
+	min_path *path_min = init_min_path(dim);
+	path_min->custo = path_min_mpi[index_min]->custo;
+	append_min_path(ORIGEM, path_min->caminho, path_min_mpi[index_min]);
+
+	printf("menor custo: %d\n", path_min->custo);
+
+	for(int i = 0; i < path_min->n_vert; i++) {
+		if (i == path_min->n_vert - 1) {
+			printf("%d --> %d\n", path_min->caminho[i], path_min->caminho[0]);
+			break;
+		}
+		printf("%d --> ", path_min->caminho[i]);
+	}
 
 	MPI_Finalize();
 	exit(0);
