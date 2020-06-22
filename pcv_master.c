@@ -76,7 +76,7 @@ int main(int argc, char **argv)  {
 
 	char	slave[40],
 		processor_name[MPI_MAX_PROCESSOR_NAME];;
-
+	c_vert * vertices;
 	c_vert ** verts_mpi;
 	min_path ** path_min_mpi;
 
@@ -85,6 +85,8 @@ int main(int argc, char **argv)  {
 	path_min_mpi = (min_path **) calloc(dim - 1, sizeof(min_path *));
 	errcodes = (int *) calloc(dim - 1, sizeof(int));
 	origs = (int *) calloc(dim - 1, sizeof(int));
+	vertices = init_c_vert(dim - 1);
+	vertices->vert = (int *) calloc(dim - 1, sizeof(int));
 
 	if (dim > 12) {
 		printf("Tem certeza que quer fazer isso?\n");
@@ -97,6 +99,7 @@ int main(int argc, char **argv)  {
 		origs[t] = t + 1;
 		verts_mpi[t] = init_c_vert(dim - 2);
 		path_min_mpi[t] = init_min_path(dim - 1);
+		vertices->vert[t] = t + 1;
 	}
 
 	for(int t = 0; t < dim - 1; t++) {
@@ -180,6 +183,10 @@ int main(int argc, char **argv)  {
 		path_min_mpi[p]->caminho = (int *) calloc(path_min_mpi[p]->n_vert, sizeof(int));
 		// Então recebe o conjunto de vértices do caminho
 		MPI_Recv(path_min_mpi[p]->caminho, path_min_mpi[p]->n_vert, MPI_INT, dst , tag, inter_comm[p], &status);
+	}
+
+	for(int k = 0; i < vertices->n_vert; i++) {
+		path_min_mpi[k]->custo += matriz[ORIGEM * dim + vertices->vert[k]];
 	}
 
 	int index_min = find_index_min(path_min_mpi, dim - 1);
