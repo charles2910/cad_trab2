@@ -35,22 +35,20 @@ int dim;
 
 int main(int argc, char **argv)  {
 	// Inicialização do PCV
-	int i, j, n_vert;
+	int	i,
+		j,
+		n_vert,
+		*matriz;
 
-	FILE *fp;
+	FILE	*fp;
 
-	if (argc > 1)
-		fp = fopen(argv[1], "r");
-	else
-		fp = fopen("caixeiro-4", "r");
+	if (argc > 1) fp = fopen(argv[1], "r");
+	else fp = fopen("caixeiro-4", "r");
 
-	// Lê a dimensão das matrizes
+	// Lê a dimensão da matriz
 	fscanf(fp, "%d\n", &dim);
 	printf("Dimensão: %d\n", dim);
  
-	// Declara a matriz global
-	int *matriz;
-
 	// Aloca a matriz
 	matriz = (int *) malloc(dim *dim * sizeof(int));
 
@@ -65,9 +63,21 @@ int main(int argc, char **argv)  {
 	printf("Argumento: %s\n", argv[1]);
 
 	// Preparação do MPI - Declarações
-	int  master_tag = 1, my_rank, num_proc, src, dst, root;
-	char slave[40];
-	int  *errcodes, *origs, buf_rcv, *vet_master, **paths;
+	int 	master_tag = 1,
+		my_rank,
+		num_proc,
+		src,
+		dst,
+		root,
+		buf_rcv,
+		name_len,
+		*errcodes,
+		*origs,
+		*vet_master,
+		**paths;
+
+	char	slave[40],
+		processor_name[MPI_MAX_PROCESSOR_NAME];;
 
 	c_vert ** verts_mpi;
 	min_path ** path_min_mpi;
@@ -106,13 +116,9 @@ int main(int argc, char **argv)  {
 		}
 	}
 
-	char processor_name[MPI_MAX_PROCESSOR_NAME];
-	int name_len;
-    
 	MPI_Status  	status;
-	MPI_Comm    	inter_comm;
+	MPI_Comm    	*inter_comm;
 	MPI_Info 		info_param = 0;
-
 
 	strcpy(slave,"pcv_slave");
 	
@@ -125,9 +131,13 @@ int main(int argc, char **argv)  {
 	MPI_Info_create(&info_param);
 	MPI_Info_set(info_param, "hostfile", "./halley.txt");
 
+	inter_comm = (MPI_Comm *) calloc(dim - 1, sizeof(MPI_Comm));
+
 
 	src = dst = root = 0;
-	//MPI_Comm_spawn(slave, argv + 1, NUM_SPAWNS, info_param, root, MPI_COMM_WORLD, &inter_comm, errcodes);
+	for(int m = 0; m < dim - 1; m++) {
+		MPI_Comm_spawn(slave, &argv[1], 1, info_param, root, MPI_COMM_WORLD, &(inter_comm[m]), errcodes);
+	}
 
 
 	//MPI_Send(msg_0, 50, MPI_CHAR, dst, master_tag, inter_comm);
