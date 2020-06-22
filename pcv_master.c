@@ -112,12 +112,11 @@ int main(int argc, char **argv)  {
 			}
 			if (marcacao) {
 				verts_mpi[t]->vert[j - 1] = vertices->vert[j];
-				printf("%d = %d\t", verts_mpi[t]->vert[j - 1], vertices->vert[j]);
 			} else {
 				verts_mpi[t]->vert[j] = vertices->vert[j];
-				printf("%d = %d\t", verts_mpi[t]->vert[j], vertices->vert[j]);
 			}
-			printf("%d\t", verts_mpi[t]->vert[j]);
+			if(marcacao) printf("%d\t", verts_mpi[t]->vert[j - 1]);
+			else printf("%d\t", verts_mpi[t]->vert[j]);
 		}
 	}
 
