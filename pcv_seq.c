@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
-//#include <omp.h>
+#include <omp.h>
 //#include <mpi.h>
 
 #define ORIGEM 0
@@ -42,7 +42,7 @@ int main(int argc, char ** argv) {
 
 	// Lê a dimensão das matrizes
 	fscanf(fp, "%d\n", &dim);
-	printf("Dimensão: %d\n", dim);
+	// printf("Dimensão: %d\n", dim);
  
 	// Declara a matriz global
 	int *matriz;
@@ -54,19 +54,19 @@ int main(int argc, char ** argv) {
 	for(i = 0; i < dim; i++) {
 		for(j = 0; j < dim; j++) {
 			fscanf(fp, "%d ", &(matriz[i*dim+j]));
-			printf("\t%d",matriz[i * dim + j]);
+			// printf("\t%d",matriz[i * dim + j]);
 		}
 	}
 
-	printf("\n\nThe cost list is:");
+	// printf("\n\nThe cost list is:");
  
-	for(i = 0; i < dim; i++)
-	{
-		printf("\n");
- 
-		for(j = 0; j < dim; j++)
-			printf("\t%d",matriz[i * dim + j]);
-	}
+//	for(i = 0; i < dim; i++)
+//	{
+//		printf("\n");
+ //
+//		for(j = 0; j < dim; j++)
+//			printf("\t%d",matriz[i * dim + j]);
+//	}
 
 	n_vert = dim - 1;
 
@@ -74,20 +74,22 @@ int main(int argc, char ** argv) {
 
 	for (int l = 1; l <= n_vert; l++) {
 		(vertices->vert)[l - 1] = l;
-		printf("\nvertice %d\n", (vertices->vert)[l-1]); 
+		// printf("\nvertice %d\n", (vertices->vert)[l-1]); 
 	}
-
+	double time  = omp_get_wtime();
 	min_path * min = find_min_path(ORIGEM, vertices, matriz);
+	time = omp_get_wtime() - time;
+	printf("\n%f", time);
+	
+//	printf("menor custo: %d\n", min->custo);
 
-	printf("menor custo: %d\n", min->custo);
-
-	for(int i = 0; i < min->n_vert; i++) {
-		if (i == min->n_vert - 1) {
-			printf("%d --> %d\n", min->caminho[i], min->caminho[0]);
-			break;
-		}
-		printf("%d --> ", min->caminho[i]);
-	}
+//	for(int i = 0; i < min->n_vert; i++) {
+//		if (i == min->n_vert - 1) {
+//			printf("%d --> %d\n", min->caminho[i], min->caminho[0]);
+//			break;
+//		}
+//		printf("%d --> ", min->caminho[i]);
+//	}
 	return 0;
 }
 
