@@ -96,6 +96,7 @@ int main(int argc, char **argv)  {
 	for (int t = 0; t < dim - 1; t++) {
 		origs[t] = t + 1;
 		verts_mpi[t] = init_c_vert(dim - 2);
+		path_min_mpi[t] = init_min_path(dim - 1);
 	}
 
 	for(int t = 0; t < dim - 1; t++) {
