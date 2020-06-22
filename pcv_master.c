@@ -166,6 +166,7 @@ int main(int argc, char **argv)  {
 		MPI_Send(verts_mpi[p]->vert, verts_mpi[p]->n_vert, MPI_CHAR, dst , tag, inter_comm[p]);
 	}
 
+	printf("\n\nPassou dos envios\n\n");
 
 	// Está na hora de receber os caminhos mínimos calculados pelos filhos
 	for(int p = 0; p < dim - 1; p++) {
