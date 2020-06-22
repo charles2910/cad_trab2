@@ -72,9 +72,7 @@ int main(int argc, char **argv)  {
 		buf_rcv,
 		name_len,
 		*errcodes,
-		*origs,
-		*vet_master,
-		**paths;
+		*origs;
 
 	char	slave[40],
 		processor_name[MPI_MAX_PROCESSOR_NAME];;
@@ -87,8 +85,6 @@ int main(int argc, char **argv)  {
 	path_min_mpi = (min_path **) calloc(dim - 1, sizeof(min_path *));
 	errcodes = (int *) calloc(dim - 1, sizeof(int));
 	origs = (int *) calloc(dim - 1, sizeof(int));
-	vet_master = (int *) calloc(dim - 1, sizeof(int));
-	paths = (int **) calloc(dim - 1, sizeof(int *));
 
 	if (dim > 12) {
 		printf("Tem certeza que quer fazer isso?\n");
@@ -97,7 +93,7 @@ int main(int argc, char **argv)  {
 	}
 
 
-	for (int t =0; t < dim - 1; t++) {
+	for (int t = 0; t < dim - 1; t++) {
 		origs[t] = t + 1;
 		verts_mpi[t] = init_c_vert(dim - 2);
 	}
@@ -163,6 +159,7 @@ int main(int argc, char **argv)  {
 
 		// Pai envia número de vértices que devem ser explorados
 		MPI_Send(&verts_mpi[p]->n_vert, dim - 2, MPI_INT, dst , tag, inter_comm[p]);
+		printf("Enviando pro filho %d os %d vértices\n", p, verts_mpi[p]->n_vert);
 		// Agora envia a origem a partir da qual procurar
 		MPI_Send(&origs[p], 1, MPI_INT, dst , tag, inter_comm[p]);
 		// Então envia o conjunto de vértices
