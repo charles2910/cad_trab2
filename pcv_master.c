@@ -158,7 +158,7 @@ int main(int argc, char **argv)  {
 		MPI_Send(master_data, 50, MPI_CHAR, dst , tag, inter_comm[p]);
 
 		// Pai envia número de vértices que devem ser explorados
-		MPI_Send(&verts_mpi[p]->n_vert, dim - 2, MPI_INT, dst , tag, inter_comm[p]);
+		MPI_Send(&verts_mpi[p]->n_vert, 1, MPI_INT, dst , tag, inter_comm[p]);
 		printf("Enviando pro filho %d os %d vértices\n", p, verts_mpi[p]->n_vert);
 		// Agora envia a origem a partir da qual procurar
 		MPI_Send(&origs[p], 1, MPI_INT, dst , tag, inter_comm[p]);
